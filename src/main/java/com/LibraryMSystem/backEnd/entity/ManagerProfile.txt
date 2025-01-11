@@ -1,0 +1,61 @@
+package com.LibraryMSystem.backEnd.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "managersProfile")
+public class ManagerProfile {
+
+    @Id
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @Column(name = "bookId")
+    private int bookId;
+
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "password")
+    private String password;
+
+
+    public ManagerProfile(){}
+
+    public ManagerProfile(String password, String username) {
+        this.password = password;
+        this.username = username;
+    }
+
+    public int getId() {
+        return bookId;
+    }
+
+    public void setId(int bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ManagerProfile{" +
+                "bookId=" + bookId +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+}
