@@ -20,8 +20,8 @@ public class Books {
     @Column(name="author_name")
     private String authorName;
 
-    @Column(name = "status")
-    private Boolean status;
+    @Column(name = "status", nullable = false)
+    public Boolean status = true;
 
     @ManyToMany
     @JoinTable(
@@ -93,8 +93,8 @@ public class Books {
         return status;
     }
 
-    public void setStatus(Boolean status) {
-        this.status = status;
+    public void setStatus(Boolean available) {
+        this.status = available;
     }
 
     @Override
@@ -108,4 +108,6 @@ public class Books {
                 ", managers=" + managers +
                 '}';
     }
+
+
 }

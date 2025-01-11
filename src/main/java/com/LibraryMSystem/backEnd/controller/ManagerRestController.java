@@ -2,6 +2,7 @@ package com.LibraryMSystem.backEnd.controller;
 
 import com.LibraryMSystem.backEnd.entity.Books;
 import com.LibraryMSystem.backEnd.entity.Users;
+import com.LibraryMSystem.backEnd.repository.BooksRepository;
 import com.LibraryMSystem.backEnd.service.ManagerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,12 @@ public class ManagerRestController {
 
     private ManagerService managerService;
 
-    public ManagerRestController(ManagerService theManagerService){
+    private BooksRepository booksRepository;
+
+
+    public ManagerRestController(ManagerService theManagerService, BooksRepository theBookRepository){
         managerService = theManagerService;
+        booksRepository = theBookRepository;
     }
 
 //    Getting all user with a specific manager
@@ -85,6 +90,18 @@ public class ManagerRestController {
         managerService.deleteUserById(userId, managerId);
 
         return ResponseEntity.ok("The User with userId " + userId + " has been deleted Succesfully");
+    }
+
+//    Checking Book Availability Status in Library
+    @GetMapping("/{managerId}/book/{bookId}/status")
+    public ResponseEntity<String> getBookStatus(@PathVariable int managerId, @PathVariable int bookId){
+
+        Books books = booksRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book Not Found"));
+
+        String status = books.getStatus() ? "Available" : "Not Available";
+
+        return ResponseEntity.ok("The Book Status is: " + status);
+
     }
 
 }

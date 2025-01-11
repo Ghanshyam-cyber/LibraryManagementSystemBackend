@@ -56,12 +56,19 @@ public class ManagerServiceImpl implements ManagerService {
 //        Checking user and book availability
         Books books = booksRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not Found with id: " + bookId));
 
+        if (books.getStatus()== null || !books.status){
+            throw new RuntimeException("Book is not available for assignment");
+        }
+//        if (Boolean.FALSE.equals(books.getStatus())){
+//            throw new RuntimeException("The Book with bookId " + bookId + " is already assigned!");/        }
+
         Users users = usersRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not Found with id: " + userId));
 //        Assigning book to user
+//        books.status(true);
+        books.setStatus(false);
+//        books.setUsers((List<Users>) users);
         users.getBooks().add(books);
         usersRepository.save(users);
-
-
         return books;
     }
 
@@ -83,10 +90,14 @@ public class ManagerServiceImpl implements ManagerService {
     public void getBookFromUser(int managerId, int bookId, int userId) {
 
         Books books = booksRepository.findById(bookId).orElseThrow(()-> new RuntimeException("Book not found with id: " + bookId));
+        if (books.status){
+            throw new RuntimeException("The Book is already present in library");
+        }
         Users users = usersRepository.findById(userId).orElseThrow(()-> new RuntimeException("User not found with id: " + userId));
 
 //        checking book in user account
         if (users.getBooks().contains(books)){
+            books.setStatus(true);
             users.getBooks().remove(books);
             usersRepository.save(users);
         }else {
