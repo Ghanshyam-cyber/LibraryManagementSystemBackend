@@ -28,10 +28,19 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/manager/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.POST,"/manager/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.PUT,"/manager/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE,"/manager/**").hasRole("MANAGER")
+
 
 
 
         );
+//        use HTTP Basic Authentication
         http.httpBasic(Customizer.withDefaults());
+
+//        disabling CSRF
+//        in general not required for stateless REST APIs that use POST, PUT, UPDATE, DELETE
+        http.csrf(csrf -> csrf.disable());
+
+        return http.build();
     }
 }
