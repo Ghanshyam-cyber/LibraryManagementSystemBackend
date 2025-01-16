@@ -23,7 +23,7 @@ public class Users {
     private String email;
 
     @Column(name = "phone_number")
-    private int mobileNumber;
+    private Long mobileNumber;
 
     @ManyToMany
     @JoinTable(
@@ -39,7 +39,7 @@ public class Users {
 
     public Users(){}
 
-    public Users(String firstName, String lastName, String email, int mobileNumber) {
+    public Users(String firstName, String lastName, String email, Long mobileNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -78,11 +78,11 @@ public class Users {
         this.email = email;
     }
 
-    public int getMobileNumber() {
+    public Long getMobileNumber() {
         return mobileNumber;
     }
 
-    public void setMobileNumber(int mobileNumber) {
+    public void setMobileNumber(Long mobileNumber) {
         this.mobileNumber = mobileNumber;
     }
 

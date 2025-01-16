@@ -20,8 +20,12 @@ public class Books {
     @Column(name="author_name")
     private String authorName;
 
-    @Column(name = "status", nullable = false)
-    public Boolean status = true;
+    @Column(name = "Available_books")
+    public int noOfCopies;
+
+//    @Column(name = "status", nullable = false)
+//    public Boolean status = true;
+
 
     @ManyToMany
     @JoinTable(
@@ -31,6 +35,7 @@ public class Books {
     )
     @JsonIgnore
     private List<Users> users;
+
 
     @ManyToMany
     @JoinTable(
@@ -43,10 +48,11 @@ public class Books {
 
     public Books(){}
 
-    public Books(String bookName, Boolean status, String authorName) {
+    public Books(String bookName, String authorName, int noOfCopies, Boolean status) {
         this.bookName = bookName;
-        this.status = status;
         this.authorName = authorName;
+        this.noOfCopies = noOfCopies;
+//        this.status = status;
     }
 
     public int getBookId() {
@@ -89,12 +95,19 @@ public class Books {
         this.authorName = authorName;
     }
 
-    public Boolean getStatus() {
-        return status;
+//    public Boolean getStatus() {
+//        return status;
+//    }
+//
+//    public void setStatus(Boolean available) {
+//        this.status = available;
+//    }
+    public int getNoOfCopies() {
+        return noOfCopies;
     }
 
-    public void setStatus(Boolean available) {
-        this.status = available;
+    public void setNoOfCopies(int noOfCopies) {
+        this.noOfCopies = noOfCopies;
     }
 
     @Override
@@ -103,11 +116,10 @@ public class Books {
                 "bookId=" + bookId +
                 ", bookName='" + bookName + '\'' +
                 ", authorName='" + authorName + '\'' +
-                ", status=" + status +
+                ", noOfCopies='" + noOfCopies + '\'' +
+//                ", status=" + status +
                 ", users=" + users +
                 ", managers=" + managers +
                 '}';
     }
-
-
 }

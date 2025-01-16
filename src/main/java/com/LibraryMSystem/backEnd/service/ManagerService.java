@@ -11,7 +11,7 @@ public interface ManagerService {
 
     Books save(Books books, int managerId);
 
-    Books assignToUser(int managerId, int bookId, int userId);
+    void assignToUser(int managerId, int bookId, int userId);
 
     List<Users> getAllUsersByManagerId(int managerId);
 
@@ -22,5 +22,9 @@ public interface ManagerService {
     void deleteBookById(int bookId, int managerId);
 
     void deleteUserById(int userId, int managerId);
+
+    Users updateUser(int managerId, int userId, Users updatedUser);
+
+    Books updateBook(int managerId, int bookId, Books updatedBook);
 }
 //

@@ -52,28 +52,26 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public Books assignToUser(int managerId, int bookId, int userId) {
+    public void assignToUser(int managerId, int bookId, int userId) {
 //        Checking user and book availability
         Books books = booksRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not Found with id: " + bookId));
 
-        if (books.getStatus()== null || !books.status){
-            throw new RuntimeException("Book is not available for assignment");
+        if (books.noOfCopies <= 0){
+            throw new RuntimeException("No Book Copy is available for assignment");
         }
-//        if (Boolean.FALSE.equals(books.getStatus())){
-//            throw new RuntimeException("The Book with bookId " + bookId + " is already assigned!");/        }
+
 
         Users users = usersRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not Found with id: " + userId));
 //        Assigning book to user
-//        books.status(true);
-        books.setStatus(false);
-//        books.setUsers((List<Users>) users);
+        books.setNoOfCopies(books.getNoOfCopies() - 1);
         users.getBooks().add(books);
         usersRepository.save(users);
-        return books;
+        booksRepository.save(books);
     }
 
     @Override
     public List<Users> getAllUsersByManagerId(int managerId) {
+
         Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new RuntimeException("Manager not found with id: " + managerId));
 
         return manager.getUsers();
@@ -81,6 +79,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public List<Books> getAllBooksByManagerId(int managerId) {
+
         Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new RuntimeException("Manager not found with id: " + managerId));
 
         return manager.getBooks();
@@ -90,19 +89,20 @@ public class ManagerServiceImpl implements ManagerService {
     public void getBookFromUser(int managerId, int bookId, int userId) {
 
         Books books = booksRepository.findById(bookId).orElseThrow(()-> new RuntimeException("Book not found with id: " + bookId));
-        if (books.status){
-            throw new RuntimeException("The Book is already present in library");
-        }
+
         Users users = usersRepository.findById(userId).orElseThrow(()-> new RuntimeException("User not found with id: " + userId));
 
-//        checking book in user account
-        if (users.getBooks().contains(books)){
-            books.setStatus(true);
-            users.getBooks().remove(books);
-            usersRepository.save(users);
-        }else {
-            throw new RuntimeException("Book with id " + bookId + "is not assigned with user with id " + userId );
+        if (!users.getBooks().contains(books)){
+            throw new RuntimeException("NO book assign with the user with id: " + userId);
         }
+
+
+//        checking book in user account
+        users.getBooks().remove(books);
+        books.setNoOfCopies(books.getNoOfCopies() + 1);
+        usersRepository.save(users);
+        booksRepository.save(books);
+
 
     }
 
@@ -136,6 +136,37 @@ public class ManagerServiceImpl implements ManagerService {
         manager.getUsers().remove(users);
         managerRepository.save(manager);
         usersRepository.delete(users);
+    }
+
+    @Override
+    public Users updateUser(int managerId, int userId, Users updatedUser) {
+        Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new RuntimeException("Manager not found with id: " + managerId));
+
+        Users users = usersRepository.findById(userId).orElseThrow(()-> new RuntimeException("User not found with user id: " + userId));
+
+        if (!manager.getUsers().contains(users)){
+            throw new RuntimeException("This user is not managed by given manager.");
+
+        }
+
+        users.setFirstName(updatedUser.getFirstName());
+        users.setLastName(updatedUser.getLastName());
+        users.setEmail(updatedUser.getEmail());
+        users.setMobileNumber(users.getMobileNumber());
+
+        return usersRepository.save(users);
+    }
+
+    @Override
+    public Books updateBook(int managerId, int bookId, Books updatedBook) {
+        Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new RuntimeException("Manager not found with id: " + managerId));
+
+        Books books = booksRepository.findById(bookId).orElseThrow(()-> new RuntimeException("Book not found with id: " + bookId));
+
+        books.setBookName(updatedBook.getBookName());
+        books.setAuthorName(updatedBook.getAuthorName());
+        books.setNoOfCopies(updatedBook.noOfCopies);
+        return booksRepository.save(books);
     }
 
 

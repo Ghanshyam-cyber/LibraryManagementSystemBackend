@@ -4,6 +4,7 @@ import com.LibraryMSystem.backEnd.entity.Books;
 import com.LibraryMSystem.backEnd.entity.Users;
 import com.LibraryMSystem.backEnd.repository.BooksRepository;
 import com.LibraryMSystem.backEnd.service.ManagerService;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,7 +77,7 @@ public class ManagerRestController {
         return ResponseEntity.ok("Book with bookId " + bookId + " has retrieved from User with userId " + userId);
     }
 
-//    Deleting Book with manager and Book Id
+//    Deleting Book with manager and Book id
     @DeleteMapping("/{managerId}/book/{bookId}")
     public ResponseEntity<String> deleteBook(@PathVariable int managerId, @PathVariable int bookId){
         managerService.deleteBookById(bookId, managerId);
@@ -84,7 +85,7 @@ public class ManagerRestController {
         return ResponseEntity.ok("The Book with bookId " + bookId + " has been deleted Succesfully");
     }
 
-//    Deleting User with manager and User Id
+//    Deleting User with manager and User id
     @DeleteMapping("/{managerId}/user/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable int managerId, @PathVariable int userId){
         managerService.deleteUserById(userId, managerId);
@@ -93,15 +94,32 @@ public class ManagerRestController {
     }
 
 //    Checking Book Availability Status in Library
-    @GetMapping("/{managerId}/book/{bookId}/status")
-    public ResponseEntity<String> getBookStatus(@PathVariable int managerId, @PathVariable int bookId){
+//    @GetMapping("/{managerId}/book/{bookId}/status")
+//    public ResponseEntity<String> getBookStatus(@PathVariable int managerId, @PathVariable int bookId){
+//
+//        Books books = booksRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book Not Found"));
+//
+//        String status = books.getStatus() ? "Available" : "Not Available";
+//
+//        return ResponseEntity.ok("The Book Status is: " + status);
 
-        Books books = booksRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book Not Found"));
+//    }
 
-        String status = books.getStatus() ? "Available" : "Not Available";
+//    Updating User
+    @PutMapping("/{managerId}/updateUser/{userId}")
+    public ResponseEntity<Users> updateUser(@PathVariable int managerId, @PathVariable int userId, @RequestBody Users updatedUser){
+        Users users = managerService.updateUser(managerId, userId,updatedUser);
+        return ResponseEntity.ok(users);
+    }
 
-        return ResponseEntity.ok("The Book Status is: " + status);
 
+    //    Updating Book
+    @PutMapping("/{managerId}/updateBook/{bookId}")
+    public ResponseEntity<Books> updateUser(@PathVariable int managerId, @PathVariable int bookId, @RequestBody Books updatedBook){
+
+        Books books = managerService.updateBook(managerId, bookId, updatedBook);
+
+        return ResponseEntity.ok(books);
     }
 
 }
@@ -109,57 +127,59 @@ public class ManagerRestController {
 
 
 
+/*
 
-// CONTROLLER CODE WITHOUT RESPONSE ENTITY
-//  Getting all users
-//@GetMapping("/users/{managerId}")
-//public List<Users> getAllUsers(@PathVariable int managerId){
-//    return managerService.getAllUsersByManagerId(managerId);
-//}
-////    Getting all books
-//@GetMapping("/books/{managerId}")
-//public List<Books> getAllBooks(@PathVariable int managerId){
-//    return managerService.getAllBooksByManagerId(managerId);
-//}
-////  Adding User to DB
-//@PostMapping("/addUser/{managerId}")
-//public Users save(@RequestBody Users theUser, @PathVariable int managerId){
-//    return managerService.save(theUser, managerId);
-//}
-////    Adding Book to DB
-//@PostMapping("/addBook/{managerId}")
-//public Books save(@RequestBody Books theBooks, @PathVariable int managerId){
-//    return managerService.save(theBooks, managerId);
-//}
-////    Assigning book to user
-//@PutMapping("/assign")
-//public Books assignBook(@RequestParam(name = "bookId") int bookId, @RequestParam(name = "bookId") int userId){
-//    return managerService.assignToUser(bookId, userId);
-//}
-//
-////    Returning book from user
-//@PutMapping("/return")
-//public String returnBook(@RequestParam int bookId, @RequestParam int userId ){
-//    managerService.getBookFromUser(bookId,userId);
-//    return "Book with id: "+ bookId + " has been returned from user with id: " + userId;
-//
-//}
-//
-////    Deleting book by bookId
-//@DeleteMapping("{managerId}/deleteBook/{bookId}")
-//public String deleteBookById(@PathVariable int managerId, @PathVariable int bookId){
-//    managerService.deleteBookById(managerId,bookId);
-//
-//    return "The Book has been deleted Successfully with id: " + bookId;
-//}
-////    Deleting user by userId
-//
-//@DeleteMapping("{managerId}/deleteUser/{userId}")
-//public String deleteUserById(@PathVariable int managerId, @PathVariable int userId){
-//    managerService.deleteUserById(managerId, userId);
-//
-//    return "The User has been deleted Successfully with id: " + userId;
-//}
+ CONTROLLER CODE WITHOUT RESPONSE ENTITY
+  Getting all users
+@GetMapping("/users/{managerId}")
+public List<Users> getAllUsers(@PathVariable int managerId){
+    return managerService.getAllUsersByManagerId(managerId);
+}
+    Getting all books
+@GetMapping("/books/{managerId}")
+public List<Books> getAllBooks(@PathVariable int managerId){
+    return managerService.getAllBooksByManagerId(managerId);
+}
+  Adding User to DB
+@PostMapping("/addUser/{managerId}")
+public Users save(@RequestBody Users theUser, @PathVariable int managerId){
+    return managerService.save(theUser, managerId);
+}
+    Adding Book to DB
+@PostMapping("/addBook/{managerId}")
+public Books save(@RequestBody Books theBooks, @PathVariable int managerId){
+    return managerService.save(theBooks, managerId);
+}
+    Assigning book to user
+@PutMapping("/assign")
+public Books assignBook(@RequestParam(name = "bookId") int bookId, @RequestParam(name = "bookId") int userId){
+    return managerService.assignToUser(bookId, userId);
+}
+
+    Returning book from user
+@PutMapping("/return")
+public String returnBook(@RequestParam int bookId, @RequestParam int userId ){
+    managerService.getBookFromUser(bookId,userId);
+    return "Book with id: "+ bookId + " has been returned from user with id: " + userId;
+
+}
+
+    Deleting book by bookId
+@DeleteMapping("{managerId}/deleteBook/{bookId}")
+public String deleteBookById(@PathVariable int managerId, @PathVariable int bookId){
+    managerService.deleteBookById(managerId,bookId);
+
+    return "The Book has been deleted Successfully with id: " + bookId;
+}
+    Deleting user by userId
+
+@DeleteMapping("{managerId}/deleteUser/{userId}")
+public String deleteUserById(@PathVariable int managerId, @PathVariable int userId){
+    managerService.deleteUserById(managerId, userId);
+
+    return "The User has been deleted Successfully with id: " + userId;
+}
+*/
 
 
 
