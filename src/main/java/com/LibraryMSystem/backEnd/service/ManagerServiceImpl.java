@@ -106,8 +106,9 @@ public class ManagerServiceImpl implements ManagerService {
 
     }
 
+//    LOGIC FOR DELETING REMAINING(UNASSIGNED) COPIES OF BOOKS
     @Override
-    public void deleteBookById(int bookId, int managerId) {
+    public void deleteRemainingCopies(int bookId, int managerId, int countRemove) {
         Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new RuntimeException("Manager Not Found With Id: " + managerId));
 
         Books books = booksRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found with Id: " + bookId));
@@ -116,10 +117,13 @@ public class ManagerServiceImpl implements ManagerService {
             throw  new RuntimeException("Manager with id " + managerId + "does not contain book with id " + bookId);
         }
 
-        manager.getBooks().remove(books);
-        managerRepository.save(manager);
-        booksRepository.delete(books);
+        int unassignCopies = books.getNoOfCopies();
+        if (countRemove > unassignCopies){
+            throw  new RuntimeException("Cannot remove copies more than unassigned. Unassigned copies: " + unassignCopies);
+        }
 
+        books.setNoOfCopies(unassignCopies - countRemove);
+        booksRepository.save(books);
     }
 
     @Override

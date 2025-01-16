@@ -19,7 +19,7 @@ public interface ManagerService {
 
     void getBookFromUser(int managerId, int bookId, int userId);
 
-    void deleteBookById(int bookId, int managerId);
+    void deleteRemainingCopies(int bookId, int managerId, int countRemove);
 
     void deleteUserById(int userId, int managerId);
 

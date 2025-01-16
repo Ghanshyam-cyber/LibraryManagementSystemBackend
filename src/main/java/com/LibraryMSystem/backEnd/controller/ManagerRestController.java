@@ -4,7 +4,6 @@ import com.LibraryMSystem.backEnd.entity.Books;
 import com.LibraryMSystem.backEnd.entity.Users;
 import com.LibraryMSystem.backEnd.repository.BooksRepository;
 import com.LibraryMSystem.backEnd.service.ManagerService;
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -79,10 +78,10 @@ public class ManagerRestController {
 
 //    Deleting Book with manager and Book id
     @DeleteMapping("/{managerId}/book/{bookId}")
-    public ResponseEntity<String> deleteBook(@PathVariable int managerId, @PathVariable int bookId){
-        managerService.deleteBookById(bookId, managerId);
+    public ResponseEntity<String> deleteBook(@PathVariable int managerId, @PathVariable int bookId, @RequestParam int countRemove ){
+        managerService.deleteRemainingCopies(bookId, managerId, countRemove);
 
-        return ResponseEntity.ok("The Book with bookId " + bookId + " has been deleted Succesfully");
+        return ResponseEntity.ok("Successfully deleted " + countRemove + "un-assigned books ");
     }
 
 //    Deleting User with manager and User id
@@ -166,8 +165,8 @@ public String returnBook(@RequestParam int bookId, @RequestParam int userId ){
 
     Deleting book by bookId
 @DeleteMapping("{managerId}/deleteBook/{bookId}")
-public String deleteBookById(@PathVariable int managerId, @PathVariable int bookId){
-    managerService.deleteBookById(managerId,bookId);
+public String deleteRemainingCopies(@PathVariable int managerId, @PathVariable int bookId){
+    managerService.deleteRemainingCopies(managerId,bookId);
 
     return "The Book has been deleted Successfully with id: " + bookId;
 }
