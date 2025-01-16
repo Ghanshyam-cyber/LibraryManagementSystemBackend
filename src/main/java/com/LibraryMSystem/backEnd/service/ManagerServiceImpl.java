@@ -163,8 +163,8 @@ public class ManagerServiceImpl implements ManagerService {
 
         Books books = booksRepository.findById(bookId).orElseThrow(()-> new RuntimeException("Book not found with id: " + bookId));
 
-        books.setBookName(updatedBook.getBookName());
-        books.setAuthorName(updatedBook.getAuthorName());
+//        books.setBookName(updatedBook.getBookName());
+//        books.setAuthorName(updatedBook.getAuthorName());
         books.setNoOfCopies(updatedBook.noOfCopies);
         return booksRepository.save(books);
     }
